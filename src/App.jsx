@@ -1,21 +1,30 @@
-import { useState } from 'react'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import { AuthContext } from "./context/AuthContext";
+import { useContext } from "react";
 
-function App() {
- 
+const PrivateRoute = ({ children }) => {
+  const { user } = useContext(AuthContext);
+  return user ? children : <Navigate to="/login" />;
+};
 
+export default function App() {
   return (
-    <>
-       <div>
-        <Login />
-        <Register />
-<h1 class="text-3xl font-bold underline">Welcome To Habit tracker  app </h1>
-       </div>
-       
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
 }
-
-export default App
